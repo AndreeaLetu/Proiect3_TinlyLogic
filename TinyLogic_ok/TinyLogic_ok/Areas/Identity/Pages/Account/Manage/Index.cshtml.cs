@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -26,67 +27,68 @@ namespace TinyLogic_ok.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string Username { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
+        // ============================
+        //   POZA PENTRU VIEW
+        // ============================
+        public string PhotoBase64 { get; set; }
+
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Phone]
-            [Display(Name = "Phone number")]
+            [Display(Name = "Număr de telefon")]
             public string PhoneNumber { get; set; }
+
             [Required]
             [DataType(DataType.Text)]
             [Display(Name = "Prenume")]
-            public string FirstName { get; set; } // <-- Adaugă asta
+            public string FirstName { get; set; }
 
             [Required]
             [DataType(DataType.Text)]
             [Display(Name = "Nume")]
-            public string LastName { get; set; }  // <-- Adaugă asta
+            public string LastName { get; set; }
 
             [Display(Name = "Rol")]
-            public string? Role { get; set; }      // <-- Adaugă asta (marcat ca nullable)
+            public string Role { get; set; }
 
             [DataType(DataType.Date)]
             [Display(Name = "Data nașterii")]
             public DateTime? BirthDate { get; set; }
+
+            // ============================
+            //   UPLOAD POZA PROFIL
+            // ============================
+            [DataType(DataType.Upload)]
+            public IFormFile PhotoFile { get; set; }
         }
 
         private async Task LoadAsync(User user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            Username = userName;
+            // ============================
+            //   ÎNCĂRCĂM POZA ÎN BASE64
+            // ============================
+            if (user.Photo != null)
+                PhotoBase64 = $"data:image/png;base64,{Convert.ToBase64String(user.Photo)}";
+
+            Username = user.Email;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Role = user.Role,
+                BirthDate = user.BirthDate
             };
         }
 
@@ -94,9 +96,7 @@ namespace TinyLogic_ok.Areas.Identity.Pages.Account.Manage
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-            {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
 
             await LoadAsync(user);
             return Page();
@@ -106,9 +106,7 @@ namespace TinyLogic_ok.Areas.Identity.Pages.Account.Manage
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-            {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
 
             if (!ModelState.IsValid)
             {
@@ -116,6 +114,7 @@ namespace TinyLogic_ok.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            // Actualizare numar telefon
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -127,8 +126,32 @@ namespace TinyLogic_ok.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            // ============================
+            //   ACTUALIZARE POZĂ PROFIL
+            // ============================
+            if (Input.PhotoFile != null)
+            {
+                using var ms = new MemoryStream();
+                await Input.PhotoFile.CopyToAsync(ms);
+                user.Photo = ms.ToArray();
+            }
+
+            // ============================
+            //   ACTUALIZARE DATE USER
+            // ============================
+            user.FirstName = Input.FirstName;
+            user.LastName = Input.LastName;
+            user.Role = Input.Role;
+
+            if (Input.BirthDate.HasValue)
+            {
+                user.BirthDate = DateTime.SpecifyKind(Input.BirthDate.Value, DateTimeKind.Utc);
+            }
+
+            await _userManager.UpdateAsync(user);
+
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Profilul a fost actualizat!";
             return RedirectToPage();
         }
     }

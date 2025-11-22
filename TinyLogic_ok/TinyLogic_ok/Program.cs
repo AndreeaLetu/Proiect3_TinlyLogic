@@ -1,28 +1,30 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using TinyLogic_ok.Models; 
+using TinyLogic_ok.Models;
+using TinyLogic_ok.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
+builder.Services.AddDbContext<TinyLogicDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("TinyLogicDB")));
 
 builder.Services.AddIdentity<User, IdentityRole<int>>()
     .AddEntityFrameworkStores<TinyLogicDbContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
-
-builder.Services.AddRazorPages();
-
-builder.Services.AddDbContext<TinyLogicDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("TinyLogicDB")));
-
+builder.Services.AddTransient<DataSeeder>();
 
 var app = builder.Build();
-
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+    await seeder.SeedAsync();
+}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -31,18 +33,22 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseRouting();
+
+app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapStaticAssets();
-
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.MapRazorPages();
+
+
+
 
 
 app.Run();

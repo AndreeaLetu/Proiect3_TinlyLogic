@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TinyLogic_ok.Models;
@@ -11,9 +12,11 @@ using TinyLogic_ok.Models;
 namespace TinyLogic_ok.Migrations
 {
     [DbContext(typeof(TinyLogicDbContext))]
-    partial class TinyLogicDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251122195546_UpdateLesson3")]
+    partial class UpdateLesson3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

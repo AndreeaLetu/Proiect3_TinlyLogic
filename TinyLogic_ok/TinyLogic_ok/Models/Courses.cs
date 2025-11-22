@@ -17,6 +17,5 @@ namespace TinyLogic_ok.Models
         // Relații
         public ICollection<Lessons> Lessons { get; set; } = new List<Lessons>();
 
-        public Tests Test { get; set; }  // fiecare curs are 1 test final
-    }
+        public Tests Test { get; set; } 
 }

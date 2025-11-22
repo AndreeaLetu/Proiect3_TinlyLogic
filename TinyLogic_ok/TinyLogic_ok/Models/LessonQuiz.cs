@@ -7,9 +7,8 @@ namespace TinyLogic_ok.Models
         [Key] public int IdQuiz { get; set; }
 
         public string Title { get; set; }
-        public string QuizJson { get; set; } // dacă stochezi întrebările ca JSON
+        public string QuizJson { get; set; } 
 
-        // Legătură 1:1 cu lecția
         public int LessonId { get; set; }
         public Lessons Lesson { get; set; }
     }

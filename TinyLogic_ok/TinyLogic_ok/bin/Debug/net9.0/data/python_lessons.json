@@ -1,0 +1,32 @@
+﻿[
+  {
+    "LessonName": "Lecția 1: Introducere în Python",
+    "OrderIndex": 1,
+    "ContentJson": {
+      "Title": "Lecția 1: Introducere în Python",
+      "Sections": [
+        {
+          "Heading": "Ce este Python?",
+          "Text": "Python este un limbaj simplu și prietenos pentru începători."
+        },
+        {
+          "Heading": "Primul program",
+          "Text": "print('Salut lume!')"
+        }
+      ]
+    }
+  },
+  {
+    "LessonName": "Lecția 2: Variabile",
+    "OrderIndex": 2,
+    "ContentJson": {
+      "Title": "Lecția 2: Variabile",
+      "Sections": [
+        {
+          "Heading": "Ce este o variabilă?",
+          "Text": "Este un spațiu în memorie unde stocăm informații."
+        }
+      ]
+    }
+  }
+]

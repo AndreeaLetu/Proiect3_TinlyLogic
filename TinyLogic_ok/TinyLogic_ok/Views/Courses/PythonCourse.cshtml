@@ -1,5 +1,46 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿
+@model TinyLogic_ok.Models.PythonCourseVM
+
+<div class="mx-auto mt-10 max-w-5xl">
+
+    <h1 class="text-4xl font-bold text-indigo-600">@Model.Course.CourseName</h1>
+    <p class="mb-6 text-gray-600">@Model.Course.Description</p>
+
+    <div class="grid grid-cols-4 gap-6">
+
+        <!-- Lista lecții -->
+        <div class="col-span-1 rounded-lg bg-white p-4 shadow">
+            <h2 class="mb-3 text-xl font-semibold">Lecții</h2>
+
+            <ul class="space-y-2">
+                @foreach (var lesson in Model.Lessons)
+                {
+                    <a href="/Courses/PythonCourse?courseId=@Model.Course.CourseId&lessonId=@lesson.IdLesson"
+                       class="block p-2 hover:bg-gray-100">
+                        @lesson.LessonName
+                    </a>
+                }
+            </ul>
+        </div>
+
+        <!-- Conținut lecție -->
+        <div class="col-span-3 rounded-lg bg-white p-6 shadow">
+
+            @if (Model.SelectedLesson == null)
+            {
+                <p>Selectează o lecție din meniu.</p>
+            }
+            else
+            {
+                <h2 class="mb-4 text-3xl font-bold">@Model.ParsedContent.Title</h2>
+
+                @foreach (var sec in Model.ParsedContent.Sections)
+                {
+                    <h3 class="mt-4 text-xl font-semibold">@sec.Heading</h3>
+                    <p class="text-gray-700">@sec.Text</p>
+                }
+            }
+        </div>
+    </div>
+
+</div>

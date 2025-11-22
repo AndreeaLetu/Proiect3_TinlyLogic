@@ -1,100 +1,96 @@
 ﻿@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Înregistrare";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Creați un cont nou.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="card rounded-4 border-0 shadow-lg">
+                <div class="card-body p-4">
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="Prenumele" />
-                <label asp-for="Input.FirstName">Prenume</label>
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="Numele" />
-                <label asp-for="Input.LastName">Nume</label>
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
+                    <h2 class="text-primary fw-bold mb-4 text-center">Creați un cont nou</h2>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" aria-required="true" placeholder="07xxxxxxxx" />
-                <label asp-for="Input.PhoneNumber">Număr de telefon</label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
+                    <form id="registerForm" enctype="multipart/form-data" method="post">
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Role" class="form-control" aria-required="true" placeholder="Rol" />
-                <label asp-for="Input.Role">Rol (Ex: Student, Profesor)</label>
-                <span asp-validation-for="Input.Role" class="text-danger"></span>
-            </div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.BirthDate" class="form-control" type="date" placeholder="Data nașterii" />
-                <label asp-for="Input.BirthDate">Data nașterii</label>
-                <span asp-validation-for="Input.BirthDate" class="text-danger"></span>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Parolă</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirmare Parolă</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Înregistrare</button>
-        </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Sau folosiți un serviciu extern pentru înregistrare.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            Nu există servicii de autentificare externe configurate. Vedeți acest <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
-                                articol
-                                despre configurarea acestei aplicații ASP.NET pentru a suporta autentificarea prin servicii externe
-                            </a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Autentificare cu contul dumneavoastră @provider.DisplayName">@provider.DisplayName</button>
-                                }
-                            </p>
+                        <!-- Poza de profil -->
+                        <div class="mb-3 text-center">
+                            <img id="previewImage" src="/images/default-profile.png"
+                                 class="rounded-circle border shadow"
+                                 style="width:120px; height:120px; object-fit:cover;">
                         </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Poză de profil</label>
+                            <input asp-for="Input.PhotoFile" type="file" class="form-control"
+                                   accept="image/*" onchange="previewFile(event)">
+                            <span asp-validation-for="Input.PhotoFile" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.FirstName" class="form-control" placeholder="Prenume">
+                            <label asp-for="Input.FirstName"></label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.LastName" class="form-control" placeholder="Nume">
+                            <label asp-for="Input.LastName"></label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.PhoneNumber" class="form-control" placeholder="07xxxxxxx">
+                            <label asp-for="Input.PhoneNumber"></label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Role" class="form-control" placeholder="Ex: Student / Profesor">
+                            <label asp-for="Input.Role"></label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.BirthDate" type="date" class="form-control">
+                            <label asp-for="Input.BirthDate"></label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email" class="form-control" placeholder="email">
+                            <label asp-for="Input.Email"></label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Password" class="form-control" placeholder="Parolă">
+                            <label asp-for="Input.Password"></label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirmare parolă">
+                            <label asp-for="Input.ConfirmPassword"></label>
+                        </div>
+
+                        <button class="btn btn-primary w-100 fw-bold rounded-3 mt-3 py-2">
+                            Înregistrare
+                        </button>
+
                     </form>
-                }
-            }
-        </section>
+
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"/>
+
+    <script>
+        function previewFile(event) {
+            const output = document.getElementById('previewImage');
+            output.src = URL.createObjectURL(event.target.files[0]);
+        }
+    </script>
 }

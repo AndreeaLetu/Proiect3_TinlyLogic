@@ -9,7 +9,7 @@ namespace TinyLogic_ok.Models
         public string? FirstName { get; set; }
         public byte[]? Photo { get; set; }
 
-        public int? PhoneNumber { get; set; }
+        //public int? PhoneNumber { get; set; }
 
         public string? Role { get; set; }
 

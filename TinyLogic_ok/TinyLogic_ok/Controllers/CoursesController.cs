@@ -16,8 +16,7 @@ namespace TinyLogic_ok.Controllers
             _context = context;
         }
 
-        // Simulare a unui obiect care ar trebui să fie citit din lessons.json sau BD
-        // Într-o aplicație reală, ați folosi un Lesson model puternic tipizat.
+      
         private class LessonViewModel
         {
             public int Id { get; set; }
@@ -29,22 +28,48 @@ namespace TinyLogic_ok.Controllers
             public string InitialCode { get; set; }
         }
 
-        // Metoda care afișează pagina cu nivelurile cursului (Views/Courses/PythonCourse.cshtml)
-        // Mapează la URL-ul /Courses/PythonCourse
-        public IActionResult PythonCourse()
+        
+    
+        public async Task<IActionResult> PythonCourse(int courseId, int? lessonId)
         {
-            return View();
+            var course = await _context.Courses
+                .Include(c => c.Lessons)
+                .FirstOrDefaultAsync(c => c.CourseId == courseId);
+
+            if (course == null)
+                return NotFound();
+
+            var lessons = course.Lessons.OrderBy(l => l.OrderIndex).ToList();
+
+            Lessons selectedLesson = null;
+            LessonContent parsed = null;
+
+            if (lessonId != null)
+            {
+                selectedLesson = lessons.FirstOrDefault(l => l.IdLesson == lessonId);
+
+                if (selectedLesson != null && selectedLesson.ContentJson != null)
+                {
+                    parsed = System.Text.Json.JsonSerializer.Deserialize<LessonContent>(selectedLesson.ContentJson);
+                }
+            }
+
+            var vm = new PythonCourseVM
+            {
+                Course = course,
+                Lessons = lessons,
+                SelectedLesson = selectedLesson,
+                ParsedContent = parsed
+            };
+
+            return View(vm);
         }
 
-        // Metoda care afișează pagina detaliată a lecției (Views/Courses/LessonDetails.cshtml)
-        // Mapează la URL-ul /Courses/Lesson?id=X
+
+      
         public IActionResult Lesson(int id)
         {
-            // --- SIMULARE DE ÎNCĂRCARE A DATELOR DIN JSON/BD ---
-            // În acest loc, ar trebui să folosești 'id' pentru a căuta
-            // în baza de date sau în fișierul JSON detaliile lecției.
-
-            // Simulare pentru Lecția 1
+          
             if (id == 1)
             {
                 var lessonData = new LessonViewModel
@@ -58,11 +83,10 @@ namespace TinyLogic_ok.Controllers
                     InitialCode = "# Scrie codul tău Python aici\nprint(\"Salut, lume!\")"
                 };
 
-                // Returnează View-ul LessonDetails, trimițând modelul de date.
+              
                 return View("LessonDetails", lessonData);
             }
 
-            // Simulare pentru Lecția 2
             if (id == 2)
             {
                 var lessonData = new LessonViewModel
@@ -78,18 +102,15 @@ namespace TinyLogic_ok.Controllers
                 return View("LessonDetails", lessonData);
             }
 
-            // Dacă ID-ul nu este găsit
+           
             return NotFound();
         }
 
-        // --- Restul metodelor din CoursesController rămân neschimbate (Index, Details, Create, Edit, Delete) ---
-        // ...
-
-        // (Copiază/Lipește restul codului tău, inclusiv Index(), Details(), Create(), etc.)
+   
         public async Task<IActionResult> Index()
         {
             return View(await _context.Courses.ToListAsync());
         }
-        // ... (etc.)
+      
     }
 }
