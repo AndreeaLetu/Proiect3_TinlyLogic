@@ -154,45 +154,6 @@ namespace TinyLogic_ok.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TinyLogic_ok.Models.Address", b =>
-                {
-                    b.Property<int>("IdAdress")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdAdress"));
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("IdUser")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ZipCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("IdAdress");
-
-                    b.HasIndex("IdUser")
-                        .IsUnique();
-
-                    b.ToTable("Adress");
-                });
-
             modelBuilder.Entity("TinyLogic_ok.Models.Courses", b =>
                 {
                     b.Property<int>("CourseId")
@@ -339,14 +300,9 @@ namespace TinyLogic_ok.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("IdAddress")
-                        .HasColumnType("integer");
-
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
@@ -366,18 +322,16 @@ namespace TinyLogic_ok.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
-                    b.Property<int>("PhoneNumber")
+                    b.Property<int?>("PhoneNumber")
                         .HasColumnType("integer");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
                     b.Property<byte[]>("Photo")
-                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
@@ -482,17 +436,6 @@ namespace TinyLogic_ok.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TinyLogic_ok.Models.Address", b =>
-                {
-                    b.HasOne("TinyLogic_ok.Models.User", "User")
-                        .WithOne("Address")
-                        .HasForeignKey("TinyLogic_ok.Models.Address", "IdUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("TinyLogic_ok.Models.LessonQuiz", b =>
                 {
                     b.HasOne("TinyLogic_ok.Models.Lessons", "Lesson")
@@ -563,9 +506,6 @@ namespace TinyLogic_ok.Migrations
 
             modelBuilder.Entity("TinyLogic_ok.Models.User", b =>
                 {
-                    b.Navigation("Address")
-                        .IsRequired();
-
                     b.Navigation("LessonsProgress");
                 });
 #pragma warning restore 612, 618

@@ -16,7 +16,6 @@ namespace TinyLogic_ok.Models
 
         // DbSets
         public DbSet<User> Users { get; set; }
-        public DbSet<Address> Adress { get; set; }
         public DbSet<Courses> Courses { get; set; }
         public DbSet<Lessons> Lessons { get; set; }
         public DbSet<LessonQuiz> LessonQuiz { get; set; }
@@ -62,11 +61,7 @@ namespace TinyLogic_ok.Models
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-            modelBuilder.Entity<Address>()
-                .HasOne(a => a.User)
-                .WithOne(u => u.Address)
-                .HasForeignKey<Address>(a => a.IdUser)
-                .OnDelete(DeleteBehavior.Cascade);
+            
 
             modelBuilder.Entity<Lessons>()
                 .Property(l => l.LessonName)

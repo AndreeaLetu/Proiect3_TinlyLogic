@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TinyLogic_ok.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Second : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,7 +24,7 @@ namespace TinyLogic_ok.Migrations
                 },
                 constraints: table =>
                 {
-                      table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -33,13 +33,12 @@ namespace TinyLogic_ok.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    LastName = table.Column<string>(type: "text", nullable: false),
-                    FirstName = table.Column<string>(type: "text", nullable: false),
-                    Photo = table.Column<byte[]>(type: "bytea", nullable: false),
-                    PhoneNumber = table.Column<int>(type: "integer", nullable: false),
-                    Role = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: true),
+                    FirstName = table.Column<string>(type: "text", nullable: true),
+                    Photo = table.Column<byte[]>(type: "bytea", nullable: true),
+                    PhoneNumber = table.Column<int>(type: "integer", nullable: true),
+                    Role = table.Column<string>(type: "text", nullable: true),
                     BirthDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IdAddress = table.Column<int>(type: "integer", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -91,30 +90,6 @@ namespace TinyLogic_ok.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Adress",
-                columns: table => new
-                {
-                    IdAdress = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Street = table.Column<string>(type: "text", nullable: false),
-                    City = table.Column<string>(type: "text", nullable: false),
-                    State = table.Column<string>(type: "text", nullable: false),
-                    ZipCode = table.Column<string>(type: "text", nullable: false),
-                    Country = table.Column<string>(type: "text", nullable: false),
-                    IdUser = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Adress", x => x.IdAdress);
-                    table.ForeignKey(
-                        name: "FK_Adress_AspNetUsers_IdUser",
-                        column: x => x.IdUser,
-                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -300,12 +275,6 @@ namespace TinyLogic_ok.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Adress_IdUser",
-                table: "Adress",
-                column: "IdUser",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -373,9 +342,6 @@ namespace TinyLogic_ok.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Adress");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  
+
     <link rel="stylesheet" href="~/TinyLogic_ok.styles.css" asp-append-version="true" />
 </head>
 <body>
@@ -33,15 +33,27 @@
                     </div>
 
                     <div class="hidden items-center space-x-3 md:flex">
-                        <a class="rounded-md border border-transparent px-3 py-2 text-sm font-medium text-gray-600 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-900"
-                           asp-area="Identity" asp-page="/Account/Login">
-                            <i class="fas fa-sign-in-alt mr-1"></i> Conectare
-                        </a>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-md transition duration-150 ease-in-out hover:bg-indigo-700"
+                               asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                                <i class="fas fa-user-circle mr-1"></i> Profil
+                            </a>
 
-                        <a class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-md transition duration-150 ease-in-out hover:bg-indigo-700"
-                           asp-area="Identity" asp-page="/Account/Register">
-                            <i class="fas fa-user-plus mr-1"></i> Crează Cont
-                        </a>
+                            <partial name="_LoginPartial" view-data='new ViewDataDictionary(ViewData) { { "ButtonClass", "rounded-md px-3 py-2 text-sm font-medium text-gray-600 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-900" } }' />
+                        }
+                        else
+                        {
+                            <a class="rounded-md border border-transparent px-3 py-2 text-sm font-medium text-gray-600 transition duration-150 ease-in-out hover:border-gray-300 hover:text-gray-900"
+                               asp-area="Identity" asp-page="/Account/Login">
+                                <i class="fas fa-sign-in-alt mr-1"></i> Conectare
+                            </a>
+
+                            <a class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-md transition duration-150 ease-in-out hover:bg-indigo-700"
+                               asp-area="Identity" asp-page="/Account/Register">
+                                <i class="fas fa-user-plus mr-1"></i> Crează Cont
+                            </a>
+                        }
                     </div>
 
                     <div class="-mr-2 flex md:hidden">
@@ -63,12 +75,24 @@
                     <a class="block rounded-md px-3 py-2 text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" asp-area="" asp-controller="Chatbot" asp-action="Index"><i class="fas fa-robot mr-1"></i> Chatbot</a>
 
                     <div class="mt-2 space-y-1 border-t border-gray-200 pt-2">
-                        <a class="block rounded-md px-3 py-2 text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" asp-area="Identity" asp-page="/Account/Login">
-                            <i class="fas fa-sign-in-alt mr-1"></i> Conectare
-                        </a>
-                        <a class="block rounded-md bg-indigo-600 px-3 py-2 text-base font-medium text-white hover:bg-indigo-700" asp-area="Identity" asp-page="/Account/Register">
-                            <i class="fas fa-user-plus mr-1"></i> Crează Cont
-                        </a>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a class="block rounded-md px-3 py-2 text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                                <i class="fas fa-user-circle mr-1"></i> Profil
+                            </a>
+
+                            <partial name="_LoginPartial" view-data='new ViewDataDictionary(ViewData) { { "ButtonClass", "block rounded-md px-3 py-2 text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" } }' />
+                        }
+                        else
+                        {
+                            <a class="block rounded-md px-3 py-2 text-base font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900" asp-area="Identity" asp-page="/Account/Login">
+                                <i class="fas fa-sign-in-alt mr-1"></i> Conectare
+                            </a>
+
+                            <a class="block rounded-md bg-indigo-600 px-3 py-2 text-base font-medium text-white hover:bg-indigo-700" asp-area="Identity" asp-page="/Account/Register">
+                                <i class="fas fa-user-plus mr-1"></i> Crează Cont
+                            </a>
+                        }
                     </div>
                 </div>
             </div>

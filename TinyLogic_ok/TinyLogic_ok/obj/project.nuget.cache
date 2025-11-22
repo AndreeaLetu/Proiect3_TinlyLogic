@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "M48ynzzVO5s=",
+  "dgSpecHash": "NpASYWKQ/wU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Deea\\Desktop\\TinyLogic_ok\\TinyLogic_ok\\TinyLogic_ok.csproj",
+  "projectFilePath": "C:\\Users\\Deea\\Documents\\GitHub\\Proiect3_TinlyLogic\\TinyLogic_ok\\TinyLogic_ok\\TinyLogic_ok.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Deea\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Deea\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
@@ -184,9 +184,9 @@
       "code": "NU1701",
       "level": "Warning",
       "message": "Package 'Microsoft.AspNet.Identity.Core 2.2.4' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net9.0'. This package may not be fully compatible with your project.",
-      "projectPath": "C:\\Users\\Deea\\Desktop\\TinyLogic_ok\\TinyLogic_ok\\TinyLogic_ok.csproj",
+      "projectPath": "C:\\Users\\Deea\\Documents\\GitHub\\Proiect3_TinlyLogic\\TinyLogic_ok\\TinyLogic_ok\\TinyLogic_ok.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\Deea\\Desktop\\TinyLogic_ok\\TinyLogic_ok\\TinyLogic_ok.csproj",
+      "filePath": "C:\\Users\\Deea\\Documents\\GitHub\\Proiect3_TinlyLogic\\TinyLogic_ok\\TinyLogic_ok\\TinyLogic_ok.csproj",
       "libraryId": "Microsoft.AspNet.Identity.Core",
       "targetGraphs": [
         "net9.0"

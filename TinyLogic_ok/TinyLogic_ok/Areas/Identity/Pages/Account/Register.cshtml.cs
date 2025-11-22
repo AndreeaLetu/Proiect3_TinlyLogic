@@ -98,6 +98,29 @@ namespace TinyLogic_ok.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Nume")]
+            public string LastName { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Prenume")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "Număr de telefon")]
+            [Phone]
+            public string PhoneNumber { get; set; } // S-a schimbat din int în string pentru flexibilitate și compatibilitate cu IdentityUser
+
+            [Required]
+            [Display(Name = "Rol")]
+            public string Role { get; set; } // Ideal ar fi un enum sau o listă fixă de roluri
+
+            [Display(Name = "Data nașterii")]
+            [DataType(DataType.Date)]
+            public DateTime? BirthDate { get; set; }
         }
 
 

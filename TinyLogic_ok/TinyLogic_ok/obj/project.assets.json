@@ -8525,11 +8525,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Deea\\Desktop\\TinyLogic_ok\\TinyLogic_ok\\TinyLogic_ok.csproj",
+      "projectUniqueName": "C:\\Users\\Deea\\Documents\\GitHub\\Proiect3_TinlyLogic\\TinyLogic_ok\\TinyLogic_ok\\TinyLogic_ok.csproj",
       "projectName": "TinyLogic_ok",
-      "projectPath": "C:\\Users\\Deea\\Desktop\\TinyLogic_ok\\TinyLogic_ok\\TinyLogic_ok.csproj",
+      "projectPath": "C:\\Users\\Deea\\Documents\\GitHub\\Proiect3_TinlyLogic\\TinyLogic_ok\\TinyLogic_ok\\TinyLogic_ok.csproj",
       "packagesPath": "C:\\Users\\Deea\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Deea\\Desktop\\TinyLogic_ok\\TinyLogic_ok\\obj\\",
+      "outputPath": "C:\\Users\\Deea\\Documents\\GitHub\\Proiect3_TinlyLogic\\TinyLogic_ok\\TinyLogic_ok\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

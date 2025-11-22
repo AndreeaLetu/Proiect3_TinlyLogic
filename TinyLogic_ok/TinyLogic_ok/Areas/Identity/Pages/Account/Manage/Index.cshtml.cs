@@ -59,6 +59,22 @@ namespace TinyLogic_ok.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Prenume")]
+            public string FirstName { get; set; } // <-- Adaugă asta
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Nume")]
+            public string LastName { get; set; }  // <-- Adaugă asta
+
+            [Display(Name = "Rol")]
+            public string? Role { get; set; }      // <-- Adaugă asta (marcat ca nullable)
+
+            [DataType(DataType.Date)]
+            [Display(Name = "Data nașterii")]
+            public DateTime? BirthDate { get; set; }
         }
 
         private async Task LoadAsync(User user)
