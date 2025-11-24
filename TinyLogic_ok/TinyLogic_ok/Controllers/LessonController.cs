@@ -1,65 +1,101 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Security.Claims;
 using TinyLogic_ok.Models;
-using System.Text.Json;
-
+using TinyLogic_ok.Services;
 
 public class LessonsController : Controller
 {
     private readonly TinyLogicDbContext _context;
+    private readonly IPythonRunner _pythonRunner;
+    private readonly ILessonProgressService _lessonProgressService;
 
-    public LessonsController(TinyLogicDbContext context)
+    public LessonsController(
+        TinyLogicDbContext context,
+        IPythonRunner pythonRunner,
+        ILessonProgressService lessonProgressService)
     {
         _context = context;
+        _pythonRunner = pythonRunner;
+        _lessonProgressService = lessonProgressService;
     }
 
-    // GET: Lessons/Create
-    public IActionResult Create(int courseId)
-    {
-        return View(new Lessons { CourseId = courseId });
-    }
-
-    // POST: Lessons/Create
     [HttpPost]
-    public async Task<IActionResult> Create(Lessons lesson)
+    public async Task<IActionResult> CheckPython([FromBody] CodeRequest request)
     {
-        if (ModelState.IsValid)
+        // 🔹 Validare request
+        if (request == null)
+            return Json(new { success = false, message = "Request lipsă!" });
+
+        if (request.LessonId <= 0)
+            return Json(new { success = false, message = "LessonId lipsă!" });
+
+        // 🔹 1) Rulează codul Python în sandbox
+        string output = "";
+        try
         {
-            _context.Add(lesson);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("PythonCourse", "Courses", new { courseId = lesson.CourseId });
+            output = _pythonRunner.Run(request.Code)?.Trim() ?? "";
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = "Eroare la rularea codului Python!", details = ex.Message });
         }
 
-        return View(lesson);
-    }
-    [HttpPost]
-    public async Task<IActionResult> ImportFromJson(int courseId)
-    {
-        var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "Data/Lessons/python_lessons.json");
+        // 🔹 2) Citește lecția din baza de date
+        var lesson = await _context.Lessons.FindAsync(request.LessonId);
+        if (lesson == null)
+            return Json(new { success = false, message = "Lecția nu există în baza de date!" });
 
-        if (!System.IO.File.Exists(jsonPath))
-            return Content("Fisierul JSON nu exista!");
-
-        var jsonData = await System.IO.File.ReadAllTextAsync(jsonPath);
-
-        var lessons = JsonSerializer.Deserialize<List<LessonJsonModel>>(jsonData);
-
-        foreach (var item in lessons)
+        // 🔹 3) Parsează JSON-ul lecției
+        LessonContent content = null;
+        try
         {
-            var lesson = new Lessons
-            {
-                CourseId = courseId,
-                LessonName = item.LessonName,
-                OrderIndex = item.OrderIndex,
-                Description = item.ContentJson.Title,
-                ContentJson = JsonSerializer.Serialize(item.ContentJson)
-            };
-
-            _context.Lessons.Add(lesson);
+            content = JsonConvert.DeserializeObject<LessonContent>(lesson.ContentJson);
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = "Eroare la citirea JSON-ului!", details = ex.Message });
         }
 
-        await _context.SaveChangesAsync();
+        if (content == null)
+            return Json(new { success = false, message = "Conținutul JSON este gol sau invalid!" });
 
-        return RedirectToAction("PythonCourse", "Courses", new { courseId });
+        if (content.Exercise == null)
+            return Json(new { success = false, message = "Exercițiul nu este definit în JSON!" });
+
+        string expected = content.Exercise.ExpectedOutput?.Trim() ?? "";
+        output = string.Join("\n", output.Split('\n').Select(line => line.Trim()));
+
+        // 🔹 Funcție locală pentru normalizare
+        string Normalize(string s) =>
+            (s ?? "")
+            .ToLower()
+            .Replace("ă", "a").Replace("â", "a").Replace("î", "i")
+            .Replace("ș", "s").Replace("ş", "s")
+            .Replace("ț", "t").Replace("ţ", "t")
+            .Trim();
+
+        // 🔹 4) Compară output-ul
+        if (Normalize(output) == Normalize(expected))
+        {
+            // Marchează lecția ca finalizată
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId != null)
+                await _lessonProgressService.MarkLessonCompletedAsync(userId, request.LessonId);
+
+            return Json(new { success = true });
+        }
+
+        // 🔹 Răspuns greșit
+        return Json(new
+        {
+            success = false,
+            message = $"Expected: '{expected}', dar ai produs: '{output}'."
+        });
+    }
+    public class CodeRequest
+    {
+        public string Code { get; set; }
+        public int LessonId { get; set; }
     }
 }

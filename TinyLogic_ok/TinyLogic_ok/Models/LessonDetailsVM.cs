@@ -10,6 +10,7 @@
     {
         public string Title { get; set; }
         public List<LessonSection> Sections { get; set; }
+        public LessonExercise Exercise { get; set; }
     }
 
     public class LessonSection

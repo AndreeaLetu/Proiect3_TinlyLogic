@@ -18,13 +18,12 @@ builder.Services.AddIdentity<User, IdentityRole<int>>()
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddTransient<DataSeeder>();
+builder.Services.AddSingleton<IPythonRunner, PythonRunner>();
+builder.Services.AddScoped<ILessonProgressService, LessonProgressService>();
+builder.Services.AddSingleton<IPythonRunner, PythonRunner>();
 
 var app = builder.Build();
-using (var scope = app.Services.CreateScope())
-{
-    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-    await seeder.SeedAsync();
-}
+
 
 if (!app.Environment.IsDevelopment())
 {
@@ -39,6 +38,12 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+using (var scope = app.Services.CreateScope())
+{
+
+    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+    await seeder.SeedAsync();
+}
 
 app.MapControllerRoute(
     name: "default",

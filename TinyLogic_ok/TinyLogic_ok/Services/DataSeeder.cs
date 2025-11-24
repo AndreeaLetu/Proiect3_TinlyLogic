@@ -21,6 +21,8 @@ namespace TinyLogic_ok.Services
 
             await SeedCoursesAsync();
             await SeedLessonsAsync();
+            await SeedTestsAsync();
+
 
             Console.WriteLine("=== END SEED ===");
         }
@@ -109,5 +111,69 @@ namespace TinyLogic_ok.Services
 
             await _context.SaveChangesAsync();
         }
+        private async Task SeedTestsAsync()
+        {
+            if (await _context.Tests.AnyAsync())
+            {
+                Console.WriteLine("Testele există deja – skip.");
+                return;
+            }
+
+            string jsonPath = Path.Combine(_env.ContentRootPath, "Data/python_tests.json");
+            Console.WriteLine("Caut json de teste la: " + jsonPath);
+
+            if (!File.Exists(jsonPath))
+            {
+                Console.WriteLine("!!! JSON-ul pentru teste NU există.");
+                return;
+            }
+
+            string json = await File.ReadAllTextAsync(jsonPath);
+
+            List<TestJsonModel>? tests;
+
+            try
+            {
+                tests = JsonSerializer.Deserialize<List<TestJsonModel>>(json);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Eroare la parsare JSON TESTE: " + ex.Message);
+                return;
+            }
+
+            if (tests == null)
+            {
+                Console.WriteLine("JSON-ul pentru teste este gol.");
+                return;
+            }
+
+            foreach (var item in tests)
+            {
+                var course = await _context.Courses
+                    .FirstOrDefaultAsync(c => c.CourseName == item.CourseName);
+
+                if (course == null)
+                {
+                    Console.WriteLine($"!!! NU există cursul {item.CourseName} – skip test.");
+                    continue;
+                }
+
+                var testEntity = new Tests
+                {
+                    TestName = item.TestName,
+                    Description = item.Description,
+                    PassingScore = item.PassingScore,
+                    CourseId = course.CourseId,
+                    TestJson = JsonSerializer.Serialize(item.TestJson)
+                };
+
+                _context.Tests.Add(testEntity);
+                Console.WriteLine($"Adaug testul: {item.TestName}");
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

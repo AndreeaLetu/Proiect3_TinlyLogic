@@ -1,0 +1,23 @@
+﻿[
+  {
+    "TestName": "Test Lecția 1",
+    "Description": "Test introductiv",
+    "PassingScore": 70,
+    "CourseName": "Python pentru copii",
+    "TestJson": {
+      "Title": "Test Python 1",
+      "Instructions": "Răspunde la întrebări.",
+      "TimeLimit": 10,
+      "Questions": [
+        {
+          "QuestionNumber": 1,
+          "QuestionText": "Ce afișează print(\"Salut\")?",
+          "QuestionType": "MultipleChoice",
+          "Options": [ "Salut", "Hello", "Python" ],
+          "CorrectAnswer": "Salut",
+          "Points": 10
+        }
+      ]
+    }
+  }
+]

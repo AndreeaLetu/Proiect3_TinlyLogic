@@ -17,5 +17,6 @@ namespace TinyLogic_ok.Models
         // Relații
         public ICollection<Lessons> Lessons { get; set; } = new List<Lessons>();
 
-        public Tests Test { get; set; } 
+        public Tests Test { get; set; }
+    }
 }

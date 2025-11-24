@@ -875,6 +875,6 @@ C:\Users\Deea\Documents\GitHub\Proiect3_TinlyLogic\TinyLogic_ok\TinyLogic_ok\obj
 C:\Users\Deea\Documents\GitHub\Proiect3_TinlyLogic\TinyLogic_ok\TinyLogic_ok\obj\Debug\net9.0\TinyLogi.4181CBBC.Up2Date
 C:\Users\Deea\Documents\GitHub\Proiect3_TinlyLogic\TinyLogic_ok\TinyLogic_ok\obj\Debug\net9.0\TinyLogic_ok.genruntimeconfig.cache
 C:\Users\Deea\Documents\GitHub\Proiect3_TinlyLogic\TinyLogic_ok\TinyLogic_ok\obj\Debug\net9.0\ref\TinyLogic_ok.dll
-C:\Users\Deea\Documents\GitHub\Proiect3_TinlyLogic\TinyLogic_ok\TinyLogic_ok\bin\Debug\net9.0\data\ContentJson.json
 C:\Users\Deea\Documents\GitHub\Proiect3_TinlyLogic\TinyLogic_ok\TinyLogic_ok\bin\Debug\net9.0\data\courses.json
 C:\Users\Deea\Documents\GitHub\Proiect3_TinlyLogic\TinyLogic_ok\TinyLogic_ok\bin\Debug\net9.0\data\python_lessons.json
+C:\Users\Deea\Documents\GitHub\Proiect3_TinlyLogic\TinyLogic_ok\TinyLogic_ok\bin\Debug\net9.0\Data\python_tests.json

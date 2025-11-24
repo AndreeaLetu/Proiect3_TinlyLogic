@@ -21,6 +21,8 @@ namespace TinyLogic_ok.Models
         public DbSet<LessonQuiz> LessonQuiz { get; set; }
         public DbSet<Tests> Tests { get; set; }
         public DbSet<UserLessons> UserLessons { get; set; }
+        public DbSet<LessonProgress> LessonProgresses { get; set; }
+        public DbSet<TestProgress> TestProgresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -66,6 +68,19 @@ namespace TinyLogic_ok.Models
             modelBuilder.Entity<Lessons>()
                 .Property(l => l.LessonName)
                 .IsRequired();
+
+            modelBuilder.Entity<TestProgress>()
+                .HasOne(tp => tp.User)
+                .WithMany() // User poate avea multe TestProgress
+                .HasForeignKey(tp => tp.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // 🔥 Configurare relație TestProgress - Tests
+            modelBuilder.Entity<TestProgress>()
+                .HasOne(tp => tp.Test)
+                .WithMany(t => t.TestProgresses)
+                .HasForeignKey(tp => tp.TestId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
