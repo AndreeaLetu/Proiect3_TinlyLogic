@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Net;
 using System.Reflection.Emit;
+using TinyLogic_ok.Models.LessonModels;
+using TinyLogic_ok.Models.CourseModels;
+using TinyLogic_ok.Models.TestModels;
+
 
 namespace TinyLogic_ok.Models
 {
@@ -13,15 +17,11 @@ namespace TinyLogic_ok.Models
             : base(options)
         {
         }
-
-        // DbSets
         public DbSet<User> Users { get; set; }
         public DbSet<Courses> Courses { get; set; }
         public DbSet<Lessons> Lessons { get; set; }
-        public DbSet<LessonQuiz> LessonQuiz { get; set; }
         public DbSet<Tests> Tests { get; set; }
         public DbSet<UserLessons> UserLessons { get; set; }
-        public DbSet<LessonProgress> LessonProgresses { get; set; }
         public DbSet<TestProgress> TestProgresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,35 +35,24 @@ namespace TinyLogic_ok.Models
                 .HasForeignKey(l => l.CourseId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-        
-            modelBuilder.Entity<Lessons>()
-                .HasOne(l => l.Quiz)
-                .WithOne(q => q.Lesson)
-                .HasForeignKey<LessonQuiz>(q => q.LessonId)
-                .OnDelete(DeleteBehavior.Cascade);
+
 
             modelBuilder.Entity<Courses>()
-                .HasOne(c => c.Test)
-                .WithOne(t => t.Course)
-                .HasForeignKey<Tests>(t => t.CourseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                 .HasMany(c => c.Tests)
+                 .WithOne(t => t.Course)
+                 .HasForeignKey(t => t.CourseId)
+                 .OnDelete(DeleteBehavior.Cascade);
 
-      
+
             modelBuilder.Entity<UserLessons>()
-                .HasOne(ul => ul.User)
-                .WithMany(u => u.LessonsProgress)
-                .HasForeignKey(ul => ul.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                 .HasOne(ul => ul.User)
+                 .WithMany(u => u.LessonsProgress)
+                 .HasForeignKey(ul => ul.UserId);
 
-        
             modelBuilder.Entity<UserLessons>()
                 .HasOne(ul => ul.Lesson)
                 .WithMany(l => l.UserProgress)
-                .HasForeignKey(ul => ul.LessonId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-
-            
+                .HasForeignKey(ul => ul.LessonId);
 
             modelBuilder.Entity<Lessons>()
                 .Property(l => l.LessonName)
@@ -71,16 +60,14 @@ namespace TinyLogic_ok.Models
 
             modelBuilder.Entity<TestProgress>()
                 .HasOne(tp => tp.User)
-                .WithMany() // User poate avea multe TestProgress
-                .HasForeignKey(tp => tp.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany() 
+                .HasForeignKey(tp => tp.UserId);
 
-            // 🔥 Configurare relație TestProgress - Tests
             modelBuilder.Entity<TestProgress>()
                 .HasOne(tp => tp.Test)
                 .WithMany(t => t.TestProgresses)
-                .HasForeignKey(tp => tp.TestId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(tp => tp.TestId);
+
         }
     }
 }

@@ -62,7 +62,6 @@ namespace TinyLogic_ok.Areas.Identity.Pages.Account
             [Compare("Password")]
             public string ConfirmPassword { get; set; }
 
-            // ✅ Poză de profil
             [DataType(DataType.Upload)]
             public IFormFile? PhotoFile { get; set; }
         }

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using TinyLogic_ok.Models;
+using TinyLogic_ok.Models.LessonModels;
+using TinyLogic_ok.Models.CourseModels;
 
 namespace TinyLogic_ok.Controllers
 {
@@ -17,7 +19,7 @@ namespace TinyLogic_ok.Controllers
             _userManager = userManager;
         }
 
-        // PAGINA CURS PYTHON
+        
         public async Task<IActionResult> PythonCourse(int courseId, int? lessonId)
         {
             var course = await _context.Courses
@@ -52,13 +54,15 @@ namespace TinyLogic_ok.Controllers
 
             var parsed = JsonConvert.DeserializeObject<LessonContent>(selectedLesson.ContentJson);
 
-            // 🔥 UserId ca string (IMPORTANT)
-            string userId = _userManager.GetUserId(User);
+         
+            int intUserId = int.Parse(_userManager.GetUserId(User));
 
-            var completedLessonIds = await _context.LessonProgresses
-                .Where(lp => lp.UserId == userId && lp.IsCompleted)
-                .Select(lp => lp.LessonId)
-                .ToListAsync();
+
+            var completedLessonIds = await _context.UserLessons
+                 .Where(lp => lp.UserId == intUserId && lp.IsCompleted)
+                 .Select(lp => lp.LessonId)
+                 .ToListAsync();
+
 
             bool isLessonCompleted = completedLessonIds.Contains(selectedLesson.IdLesson);
 

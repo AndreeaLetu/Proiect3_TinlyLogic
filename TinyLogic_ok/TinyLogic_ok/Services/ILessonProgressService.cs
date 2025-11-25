@@ -2,6 +2,7 @@
 {
     public interface ILessonProgressService
     {
-        Task MarkLessonCompletedAsync(string userId, int lessonId);
+        Task MarkLessonCompletedAsync(int userId, int lessonId);
+
     }
 }

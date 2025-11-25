@@ -1,4 +1,5 @@
-﻿@model TinyLogic_ok.Models.TestVM
+﻿@using TinyLogic_ok.Models.TestModels
+@model TestVM
 
 <div class="mx-auto mt-10 max-w-4xl">
 
@@ -29,7 +30,7 @@
         }
     </div>
 
-    <!-- Formular întrebări -->
+
     <form id="testForm">
         @for (int i = 0; i < Model.ParsedContent.Questions.Count; i++)
         {
@@ -98,11 +99,11 @@
         </div>
     </form>
 
-    <!-- Modal rezultat -->
+   
     <div id="resultModal" class="fixed inset-0 hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
         <div class="max-w-md rounded-2xl bg-white p-8 shadow-xl">
             <div id="resultContent" class="text-center">
-                <!-- Se populează dinamic -->
+               
             </div>
             <button onclick="location.reload()"
                     class="mt-6 w-full rounded-lg bg-indigo-600 py-3 font-semibold text-white hover:bg-indigo-700">

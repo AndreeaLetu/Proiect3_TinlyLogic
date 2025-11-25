@@ -2,6 +2,11 @@
 using TinyLogic_ok.Models;
 using Microsoft.EntityFrameworkCore;
 
+using TinyLogic_ok.Models.CourseModels;
+using TinyLogic_ok.Models.LessonModels;
+using TinyLogic_ok.Models.TestModels;
+
+
 namespace TinyLogic_ok.Services
 {
     public class DataSeeder

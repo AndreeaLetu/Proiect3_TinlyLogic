@@ -1,6 +1,8 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using TinyLogic_ok.Models;
 using TinyLogic_ok.Services;
+using TinyLogic_ok.Models.LessonModels;
 
 public class LessonProgressService : ILessonProgressService
 {
@@ -11,9 +13,15 @@ public class LessonProgressService : ILessonProgressService
         _context = context;
     }
 
-    public async Task MarkLessonCompletedAsync(string userId, int lessonId)
+    public async Task MarkLessonCompletedAsync(int userId, int lessonId)
     {
-        var progress = new LessonProgress
+        var existing = await _context.UserLessons
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.LessonId == lessonId);
+
+        if (existing != null)
+            return;
+
+        var progress = new UserLessons
         {
             UserId = userId,
             LessonId = lessonId,
@@ -21,7 +29,7 @@ public class LessonProgressService : ILessonProgressService
             CompletedAt = DateTime.UtcNow
         };
 
-        _context.LessonProgresses.Add(progress);
+        _context.UserLessons.Add(progress);
         await _context.SaveChangesAsync();
     }
 }

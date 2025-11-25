@@ -154,7 +154,7 @@ namespace TinyLogic_ok.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TinyLogic_ok.Models.Courses", b =>
+            modelBuilder.Entity("TinyLogic_ok.Models.CourseModels.Courses", b =>
                 {
                     b.Property<int>("CourseId")
                         .ValueGeneratedOnAdd()
@@ -179,60 +179,7 @@ namespace TinyLogic_ok.Migrations
                     b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("TinyLogic_ok.Models.LessonProgress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CompletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("LessonId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LessonProgresses");
-                });
-
-            modelBuilder.Entity("TinyLogic_ok.Models.LessonQuiz", b =>
-                {
-                    b.Property<int>("IdQuiz")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdQuiz"));
-
-                    b.Property<int>("LessonId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("QuizJson")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("IdQuiz");
-
-                    b.HasIndex("LessonId")
-                        .IsUnique();
-
-                    b.ToTable("LessonQuiz");
-                });
-
-            modelBuilder.Entity("TinyLogic_ok.Models.Lessons", b =>
+            modelBuilder.Entity("TinyLogic_ok.Models.LessonModels.Lessons", b =>
                 {
                     b.Property<int>("IdLesson")
                         .ValueGeneratedOnAdd()
@@ -268,7 +215,36 @@ namespace TinyLogic_ok.Migrations
                     b.ToTable("Lessons");
                 });
 
-            modelBuilder.Entity("TinyLogic_ok.Models.TestProgress", b =>
+            modelBuilder.Entity("TinyLogic_ok.Models.LessonModels.UserLessons", b =>
+                {
+                    b.Property<int>("IdUserLesson")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdUserLesson"));
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("LessonId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("IdUserLesson");
+
+                    b.HasIndex("LessonId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserLessons");
+                });
+
+            modelBuilder.Entity("TinyLogic_ok.Models.TestModels.TestProgress", b =>
                 {
                     b.Property<int>("IdTestProgress")
                         .ValueGeneratedOnAdd()
@@ -295,16 +271,21 @@ namespace TinyLogic_ok.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("integer");
+
                     b.HasKey("IdTestProgress");
 
                     b.HasIndex("TestId");
 
                     b.HasIndex("UserId");
 
+                    b.HasIndex("UserId1");
+
                     b.ToTable("TestProgresses");
                 });
 
-            modelBuilder.Entity("TinyLogic_ok.Models.Tests", b =>
+            modelBuilder.Entity("TinyLogic_ok.Models.TestModels.Tests", b =>
                 {
                     b.Property<int>("IdTest")
                         .ValueGeneratedOnAdd()
@@ -332,8 +313,7 @@ namespace TinyLogic_ok.Migrations
 
                     b.HasKey("IdTest");
 
-                    b.HasIndex("CourseId")
-                        .IsUnique();
+                    b.HasIndex("CourseId");
 
                     b.ToTable("Tests");
                 });
@@ -420,35 +400,6 @@ namespace TinyLogic_ok.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("TinyLogic_ok.Models.UserLessons", b =>
-                {
-                    b.Property<int>("IdUserLesson")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdUserLesson"));
-
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("LessonId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("IdUserLesson");
-
-                    b.HasIndex("LessonId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserLessons");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -500,20 +451,9 @@ namespace TinyLogic_ok.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TinyLogic_ok.Models.LessonQuiz", b =>
+            modelBuilder.Entity("TinyLogic_ok.Models.LessonModels.Lessons", b =>
                 {
-                    b.HasOne("TinyLogic_ok.Models.Lessons", "Lesson")
-                        .WithOne("Quiz")
-                        .HasForeignKey("TinyLogic_ok.Models.LessonQuiz", "LessonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Lesson");
-                });
-
-            modelBuilder.Entity("TinyLogic_ok.Models.Lessons", b =>
-                {
-                    b.HasOne("TinyLogic_ok.Models.Courses", "Course")
+                    b.HasOne("TinyLogic_ok.Models.CourseModels.Courses", "Course")
                         .WithMany("Lessons")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -522,39 +462,9 @@ namespace TinyLogic_ok.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("TinyLogic_ok.Models.TestProgress", b =>
+            modelBuilder.Entity("TinyLogic_ok.Models.LessonModels.UserLessons", b =>
                 {
-                    b.HasOne("TinyLogic_ok.Models.Tests", "Test")
-                        .WithMany("TestProgresses")
-                        .HasForeignKey("TestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TinyLogic_ok.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Test");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TinyLogic_ok.Models.Tests", b =>
-                {
-                    b.HasOne("TinyLogic_ok.Models.Courses", "Course")
-                        .WithOne("Test")
-                        .HasForeignKey("TinyLogic_ok.Models.Tests", "CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("TinyLogic_ok.Models.UserLessons", b =>
-                {
-                    b.HasOne("TinyLogic_ok.Models.Lessons", "Lesson")
+                    b.HasOne("TinyLogic_ok.Models.LessonModels.Lessons", "Lesson")
                         .WithMany("UserProgress")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -571,23 +481,53 @@ namespace TinyLogic_ok.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TinyLogic_ok.Models.Courses", b =>
+            modelBuilder.Entity("TinyLogic_ok.Models.TestModels.TestProgress", b =>
+                {
+                    b.HasOne("TinyLogic_ok.Models.TestModels.Tests", "Test")
+                        .WithMany("TestProgresses")
+                        .HasForeignKey("TestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TinyLogic_ok.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TinyLogic_ok.Models.User", null)
+                        .WithMany("TestsProgress")
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("Test");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TinyLogic_ok.Models.TestModels.Tests", b =>
+                {
+                    b.HasOne("TinyLogic_ok.Models.CourseModels.Courses", "Course")
+                        .WithMany("Tests")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("TinyLogic_ok.Models.CourseModels.Courses", b =>
                 {
                     b.Navigation("Lessons");
 
-                    b.Navigation("Test")
-                        .IsRequired();
+                    b.Navigation("Tests");
                 });
 
-            modelBuilder.Entity("TinyLogic_ok.Models.Lessons", b =>
+            modelBuilder.Entity("TinyLogic_ok.Models.LessonModels.Lessons", b =>
                 {
-                    b.Navigation("Quiz")
-                        .IsRequired();
-
                     b.Navigation("UserProgress");
                 });
 
-            modelBuilder.Entity("TinyLogic_ok.Models.Tests", b =>
+            modelBuilder.Entity("TinyLogic_ok.Models.TestModels.Tests", b =>
                 {
                     b.Navigation("TestProgresses");
                 });
@@ -595,6 +535,8 @@ namespace TinyLogic_ok.Migrations
             modelBuilder.Entity("TinyLogic_ok.Models.User", b =>
                 {
                     b.Navigation("LessonsProgress");
+
+                    b.Navigation("TestsProgress");
                 });
 #pragma warning restore 612, 618
         }

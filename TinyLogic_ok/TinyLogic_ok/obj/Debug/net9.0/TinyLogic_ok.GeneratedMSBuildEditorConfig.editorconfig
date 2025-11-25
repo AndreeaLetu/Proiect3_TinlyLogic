@@ -188,22 +188,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Deea/Documents/GitHub/Proiect3_TinlyLogic/TinyLogic_ok/TinyLogic_ok/Views/Courses/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ291cnNlc1xDcmVhdGUuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Deea/Documents/GitHub/Proiect3_TinlyLogic/TinyLogic_ok/TinyLogic_ok/Views/Courses/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ291cnNlc1xEZWxldGUuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Deea/Documents/GitHub/Proiect3_TinlyLogic/TinyLogic_ok/TinyLogic_ok/Views/Courses/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ291cnNlc1xEZXRhaWxzLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Deea/Documents/GitHub/Proiect3_TinlyLogic/TinyLogic_ok/TinyLogic_ok/Views/Courses/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ291cnNlc1xFZGl0LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/Deea/Documents/GitHub/Proiect3_TinlyLogic/TinyLogic_ok/TinyLogic_ok/Views/Courses/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ291cnNlc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -234,22 +218,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Deea/Documents/GitHub/Proiect3_TinlyLogic/TinyLogic_ok/TinyLogic_ok/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Deea/Documents/GitHub/Proiect3_TinlyLogic/TinyLogic_ok/TinyLogic_ok/Views/Tests/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcQ3JlYXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Deea/Documents/GitHub/Proiect3_TinlyLogic/TinyLogic_ok/TinyLogic_ok/Views/Tests/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcRGVsZXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Deea/Documents/GitHub/Proiect3_TinlyLogic/TinyLogic_ok/TinyLogic_ok/Views/Tests/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcRGV0YWlscy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Deea/Documents/GitHub/Proiect3_TinlyLogic/TinyLogic_ok/TinyLogic_ok/Views/Tests/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdHNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Deea/Documents/GitHub/Proiect3_TinlyLogic/TinyLogic_ok/TinyLogic_ok/Views/Tests/Index.cshtml]

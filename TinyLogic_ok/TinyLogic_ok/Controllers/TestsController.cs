@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using TinyLogic_ok.Models;
+using TinyLogic_ok.Models.TestModels;
 
 namespace TinyLogic_ok.Controllers
 {
@@ -20,55 +21,52 @@ namespace TinyLogic_ok.Controllers
             _userManager = userManager;
         }
 
+        
         [HttpGet]
-        // GET: Lista de teste
         public async Task<IActionResult> Index()
         {
             int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            // 1. Încărcăm toate testele și lecțiile asociate (o singură interogare mare)
             var tests = await _context.Tests
                 .Include(t => t.Course)
                     .ThenInclude(c => c.Lessons)
                 .ToListAsync();
 
-            // 2. Colectăm toate ID-urile de lecții din toate cursurile
-            var allLessonIds = tests.SelectMany(t => t.Course.Lessons.Select(l => l.IdLesson)).Distinct().ToList();
+            var allLessonIds = tests
+                .SelectMany(t => t.Course.Lessons.Select(l => l.IdLesson))
+                .Distinct()
+                .ToList();
 
-            // 3. Încărcăm TOATE progresele lecțiilor utilizatorului (o singură interogare)
-            var allLessonProgress = await _context.LessonProgresses
-                .Where(lp => lp.UserId == userId.ToString() && lp.IsCompleted && allLessonIds.Contains(lp.LessonId))
+            var allLessonProgress = await _context.UserLessons
+                .Where(ul => ul.UserId == userId &&
+                             ul.IsCompleted &&
+                             allLessonIds.Contains(ul.LessonId))
                 .ToListAsync();
 
-            // 4. Încărcăm TOATE progresele testelor utilizatorului (o singură interogare)
             var allTestProgress = await _context.TestProgresses
                 .Where(tp => tp.UserId == userId)
                 .OrderByDescending(tp => tp.CompletedAt)
                 .ToListAsync();
 
-
             var testVMs = new List<TestVM>();
 
-            // 5. Acum, iterăm și calculăm totul în memorie (C#), fără await-uri costisitoare
             foreach (var test in tests)
             {
-                // Găsim ID-urile lecțiilor CURENTE
                 var currentTestLessonIds = test.Course.Lessons.Select(l => l.IdLesson).ToList();
                 var totalLessons = currentTestLessonIds.Count;
 
-                // Calculăm lecțiile finalizate prin filtrarea listei din memorie (allLessonProgress)
                 var completedLessons = allLessonProgress
                     .Count(lp => currentTestLessonIds.Contains(lp.LessonId));
 
                 bool isLocked = completedLessons < totalLessons;
 
-                // Găsim cel mai recent progres al testului din lista din memorie (allTestProgress)
                 var testProgress = allTestProgress
-                    .FirstOrDefault(tp => tp.TestId == test.IdTest); // Primul rezultat va fi cel mai recent datorită OrderByDescending de mai sus.
+                    .FirstOrDefault(tp => tp.TestId == test.IdTest);
 
                 testVMs.Add(new TestVM
                 {
                     Test = test,
+                    ParsedContent = null,
                     IsLocked = isLocked,
                     IsCompleted = testProgress != null && testProgress.IsPassed,
                     LastScore = testProgress?.Score,
@@ -81,8 +79,8 @@ namespace TinyLogic_ok.Controllers
             return View(testVMs);
         }
 
-        // GET: Pagina unui test specific
-        public async Task<IActionResult> TakeTest(int testId, LessonProgress lp)
+        
+        public async Task<IActionResult> TakeTest(int testId)
         {
             int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
@@ -94,18 +92,18 @@ namespace TinyLogic_ok.Controllers
             if (test == null)
                 return NotFound();
 
-            var totalLessons = test.Course.Lessons.Count;
+            var courseLessonIds = test.Course.Lessons.Select(l => l.IdLesson).ToList();
+            var totalLessons = courseLessonIds.Count;
 
             var completedLessons = await _context.UserLessons
-                .Where(ul => ul.UserId == userId
-                    && ul.IsCompleted
-                    && test.Course.Lessons.Select(l => l.IdLesson).Contains(ul.LessonId))
+                .Where(ul => ul.UserId == userId &&
+                             ul.IsCompleted &&
+                             courseLessonIds.Contains(ul.LessonId))
                 .CountAsync();
-
 
             if (completedLessons < totalLessons)
             {
-                TempData["Error"] = "Trebuie să finalizezi cursul pentru a debloca acest test!";
+                TempData["Error"] = "Trebuie să finalizezi toate lecțiile pentru a da acest test!";
                 return RedirectToAction("Index");
             }
 
@@ -131,7 +129,6 @@ namespace TinyLogic_ok.Controllers
             return View(vm);
         }
 
-        // POST: Verifică răspunsurile
         [HttpPost]
         public async Task<IActionResult> SubmitTest([FromBody] SubmitTestRequest request)
         {
@@ -148,17 +145,13 @@ namespace TinyLogic_ok.Controllers
 
             foreach (var answer in request.Answers)
             {
-                // 🔥 CORECȚIE: Ne asigurăm că ambele părți ale comparației sunt string-uri.
-                // Acest lucru rezolvă eroarea 'string' și 'int'.
-                string expectedQuestionNumber = answer.QuestionNumber.ToString();
-                
                 var question = parsedContent.Questions
-                    .FirstOrDefault(q => q.QuestionNumber.ToString() == expectedQuestionNumber);
+                    .FirstOrDefault(q => q.QuestionNumber == answer.QuestionNumber);
 
                 if (question != null)
                 {
-                    string userAnswer = NormalizeDiacritics(answer.Answer.Trim().ToLower());
-                    string correctAnswer = NormalizeDiacritics(question.CorrectAnswer.Trim().ToLower());
+                    string userAnswer = Normalize(answer.Answer);
+                    string correctAnswer = Normalize(question.CorrectAnswer);
 
                     if (userAnswer == correctAnswer)
                         totalScore += question.Points;
@@ -174,7 +167,7 @@ namespace TinyLogic_ok.Controllers
                 TestId = request.TestId,
                 Score = percentage,
                 IsPassed = isPassed,
-                CompletedAt = DateTime.Now,
+                CompletedAt = DateTime.UtcNow,
                 AnswersJson = JsonConvert.SerializeObject(request.Answers)
             };
 
@@ -192,12 +185,13 @@ namespace TinyLogic_ok.Controllers
             });
         }
 
-        private string NormalizeDiacritics(string text)
+        private string Normalize(string text)
         {
-            return text
+            return text.ToLower()
                 .Replace("ă", "a").Replace("â", "a").Replace("î", "i")
                 .Replace("ș", "s").Replace("ş", "s")
-                .Replace("ț", "t").Replace("ţ", "t");
+                .Replace("ț", "t").Replace("ţ", "t")
+                .Trim();
         }
 
         public class SubmitTestRequest

@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Security.Claims;
 using TinyLogic_ok.Models;
+using TinyLogic_ok.Models.LessonModels;
 using TinyLogic_ok.Services;
 
 public class LessonsController : Controller
@@ -23,14 +24,14 @@ public class LessonsController : Controller
     [HttpPost]
     public async Task<IActionResult> CheckPython([FromBody] CodeRequest request)
     {
-        // 🔹 Validare request
+        
         if (request == null)
             return Json(new { success = false, message = "Request lipsă!" });
 
         if (request.LessonId <= 0)
             return Json(new { success = false, message = "LessonId lipsă!" });
 
-        // 🔹 1) Rulează codul Python în sandbox
+        
         string output = "";
         try
         {
@@ -41,12 +42,11 @@ public class LessonsController : Controller
             return Json(new { success = false, message = "Eroare la rularea codului Python!", details = ex.Message });
         }
 
-        // 🔹 2) Citește lecția din baza de date
+        
         var lesson = await _context.Lessons.FindAsync(request.LessonId);
         if (lesson == null)
             return Json(new { success = false, message = "Lecția nu există în baza de date!" });
 
-        // 🔹 3) Parsează JSON-ul lecției
         LessonContent content = null;
         try
         {
@@ -66,7 +66,7 @@ public class LessonsController : Controller
         string expected = content.Exercise.ExpectedOutput?.Trim() ?? "";
         output = string.Join("\n", output.Split('\n').Select(line => line.Trim()));
 
-        // 🔹 Funcție locală pentru normalizare
+     
         string Normalize(string s) =>
             (s ?? "")
             .ToLower()
@@ -75,18 +75,25 @@ public class LessonsController : Controller
             .Replace("ț", "t").Replace("ţ", "t")
             .Trim();
 
-        // 🔹 4) Compară output-ul
         if (Normalize(output) == Normalize(expected))
         {
-            // Marchează lecția ca finalizată
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId != null)
+            
+
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (int.TryParse(userIdString, out int userId))
+            {
                 await _lessonProgressService.MarkLessonCompletedAsync(userId, request.LessonId);
+            }
+            else
+            {
+                return Json(new { success = false, message = "Eroare: ID-ul utilizatorului nu este valid!" });
+            }
 
             return Json(new { success = true });
         }
 
-        // 🔹 Răspuns greșit
+       
         return Json(new
         {
             success = false,
